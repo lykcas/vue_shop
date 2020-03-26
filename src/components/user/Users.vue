@@ -37,7 +37,8 @@
         <!-- 状态按钮 -->
         <el-table-column label="状态" prop="mg_state">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state"></el-switch>
+            <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
+            </el-switch>
           </template>
         </el-table-column>
         <!-- 编辑、删除 、权限按钮 -->
@@ -88,7 +89,7 @@
         queryInfo: {
           query: '',
           pagenum: 1,
-          pagesize: 2
+          pagesize: 5
         },
         userlist: [],
         total: 0,
@@ -116,6 +117,7 @@
       async getUserList() {
         const { data: res } = await this.$http.get('users', { params: this.queryInfo })
         if (res.meta.status !== 200) return this.$message.error('获取用户列表失败')
+        console.log(res)
         this.userlist = res.data.users
         this.total = res.data.total
         console.log(res)
@@ -130,9 +132,19 @@
       handleCurrentChange(newPage) {
         this.queryInfo.pagenum = newPage
         this.getUserList()
+      },
+
+      // 监听 switch 开关状态的改变，修改状态值
+      async userStateChanged(userinfo) {
+        const {data:res} = await this.$http.put(`users/${userinfo.id}/state/${userinfo.mg_state}`)
+        if (res.meta.status !== 200) {
+          userinfo.mg_state = !userinfo.mg_state
+          return this.$message.error('更新用户失败')
+        }
+        this.$message.success('更新用户状态成功')
       }
 
-    },
+    }
   }
 </script>
 
@@ -141,6 +153,11 @@
 
 
 <!-- 未绑定
+  拿到API后先做什么：
+  //1. 修改 侧边栏
+  2. 修改 用户管理->用户列表->用户显示格式，添加用户的对话框
+  3. 完成 修改用户 和 删除用户
+
   用户状态修改: P50
   完整的添加用户表单 addForm： P53
     自定义用户信息的验证规则，例如邮箱、手机: P54
@@ -150,9 +167,27 @@
   修改用户功能：P58-63
   删除用户功能：P64-65
 
-  拿到API后先做什么：
-  1. 修改 侧边栏
-  2. 修改 用户管理->用户列表->用户显示格式，添加用户的对话框
-  3. 完成 修改用户 和 删除用户
+  权限管理
+    分为两种用户：admin和mannufactor
+    A是超级管理者，可以做所有事情
+    M只能对商品（游戏）进行管理
+    角色列表
+      未做：P74-84
+      分配权限：P85-91
+    权限列表 （list结构）
+      渲染权限标签：P71
+      
+
+  商品管理
+    商品（游戏）列表
+    商品（游戏）分类
+
+  订单（论坛）管理
+
+  订单（market）管理
+    这个可以和论坛的形式一样，只不过这里的帖子名字是游戏/组件的名字+售价
+
+  订单（club）管理
+    还没想好
 -->
 
