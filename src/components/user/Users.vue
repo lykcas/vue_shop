@@ -28,28 +28,32 @@
         <!--索引列-->
         <el-table-column label="姓名" prop="username">
         </el-table-column>
-        <el-table-column label="邮箱" prop="email">
+        <el-table-column label="性别" prop="user_sex">
         </el-table-column>
-        <el-table-column label="电话" prop="mobile">
+        <el-table-column label="邮箱" prop="user_email">
         </el-table-column>
-        <el-table-column label="角色" prop="role_name">
+        <el-table-column label="电话" prop="user_tel">
+        </el-table-column>
+        <el-table-column label="现居地" prop="U_livingplace">
+        </el-table-column>
+        <el-table-column label="生日" prop="birthday">
         </el-table-column>
         <!-- 状态按钮 -->
-        <el-table-column label="状态" prop="mg_state">
+        <!-- <el-table-column label="状态" prop="mg_state">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
             </el-switch>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <!-- 修改、删除、权限按钮 -->
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)">
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.user_id)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.user_id)">
             </el-button>
-            <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+            <!-- <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
               <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
-            </el-tooltip>
+            </el-tooltip> -->
           </template>
         </el-table-column>
       </el-table>
@@ -71,11 +75,26 @@
         <el-form-item label="密码" prop="password">
           <el-input v-model="addForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="addForm.email"></el-input>
+        <el-form-item label="性别" prop="user_sex">
+          <el-input v-model="addForm.user_sex"></el-input>
         </el-form-item>
-        <el-form-item label="手机" prop="mobile">
-          <el-input v-model="addForm.mobile"></el-input>
+        <el-form-item label="生日" prop="birthday">
+          <el-input v-model="addForm.birthday"></el-input>
+        </el-form-item>
+        <el-form-item label="现居地" prop="U_livingplace">
+          <el-input v-model="addForm.U_livingplace"></el-input>
+        </el-form-item>
+        <el-form-item label="注册时间" prop="register_time">
+          <el-input v-model="addForm.register_time"></el-input>
+        </el-form-item>
+        <el-form-item label="登陆时间" prop="update_time">
+          <el-input v-model="addForm.update_time"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="user_email">
+          <el-input v-model="addForm.user_email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="user_tel">
+          <el-input v-model="addForm.user_tel"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部区域 -->
@@ -91,11 +110,23 @@
         <el-form-item label="用户名">
           <el-input v-model="editForm.username" disabled></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="editForm.email"></el-input>
+        <el-form-item label="性别" prop="user_sex">
+          <el-input v-model="editForm.user_sex"></el-input>
         </el-form-item>
-        <el-form-item label="手机" prop="mobile">
-          <el-input v-model="editForm.mobile"></el-input>
+        <el-form-item label="生日" prop="birthday">
+          <el-input v-model="editForm.birthday"></el-input>
+        </el-form-item>
+        <el-form-item label="现居地" prop="U_livingplace">
+          <el-input v-model="editForm.U_livingplace"></el-input>
+        </el-form-item>
+        <el-form-item label="登陆时间" prop="update_time">
+          <el-input v-model="editForm.update_time"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="user_email">
+          <el-input v-model="editForm.user_email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="user_tel">
+          <el-input v-model="editForm.user_tel"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部区域 -->
@@ -106,7 +137,7 @@
     </el-dialog>
 
     <!-- 分配角色的对话框 -->
-    <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="50%" @close="setRoleDialogClosed">
+    <!-- <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="50%" @close="setRoleDialogClosed">
       <div>
         <p>当前的用户：{{userInfo.username}}</p>
         <p>当前的角色：{{userInfo.role_name}}</p>
@@ -121,7 +152,7 @@
         <el-button @click="setRoleDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
 
   </div>
 
@@ -156,6 +187,28 @@
         cb(new Error('请输入合法的手机号'))
       }
 
+      // 验证性别
+      var checkSex = (rule, value, cb) => {
+        const regSex = /Secret|F|M/
+
+        if (regSex.test(value)) {
+          return cb()
+        }
+
+        cb(new Error('请输入Secret/F/M'))
+      }
+
+      // 验证日期 年-月-日
+      var checkDate = (rule, value, cb) => {
+        const regDate = /^([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8])))$/
+
+        if (regDate.test(value)) {
+          return cb()
+        }
+
+        cb(new Error('请以年-月-日格式输入'))
+      }
+
       return {
         // 获取用户列表参数
         queryInfo: {
@@ -179,21 +232,31 @@
           ],
           password: [
             { required: true, message: '请输入密码', trigger: 'blur' },
-            {
-              min: 6,
-              max: 15,
-              message: '用户名的长度在6~15个字符之间',
-              trigger: 'blur'
-            }
+            { min: 6, max: 15, message: '用户名的长度在6~15个字符之间', trigger: 'blur' }
           ],
-          email: [
+          user_sex: [
+            { required: true, message: '请输入性别', trigger: 'blur' },
+            { validator: checkSex, trigger: 'blur' }
+          ],
+          U_livingplace: [
+            { required: true, message: '请输入现居地', trigger: 'blur' }
+          ],
+          user_email: [
             { required: true, message: '请输入邮箱', trigger: 'blur' },
             { validator: checkEmail, trigger: 'blur' }
           ],
-          mobile: [
-            { required: true, message: '请输入手机号', trigger: 'blur' },
-            { validator: checkMobile, trigger: 'blur' }
+          register_time: [
+            { required: true, message: '请输入年-月-日', trigger: 'blur' },
+            { validator: checkDate, trigger: 'blur' }
+          ],
+          update_time: [
+            { required: true, message: '请输入年-月-日', trigger: 'blur' },
+            { validator: checkDate, trigger: 'blur' }
           ]
+          // user_tel: [
+          //   { required: true, message: '请输入手机号', trigger: 'blur' },
+          //   { validator: checkMobile, trigger: 'blur' }
+          // ]
         },
 
         // 控制修改用户对话框的显示与隐藏
@@ -202,23 +265,29 @@
         editForm: {},
         // 修改表单的验证规则对象
         editFormRules: {
-          email: [
+          user_email: [
             { required: true, message: '请输入用户邮箱', trigger: 'blur' },
             { validator: checkEmail, trigger: 'blur' }
           ],
-          mobile: [
-            { required: true, message: '请输入用户手机', trigger: 'blur' },
-            { validator: checkMobile, trigger: 'blur' }
+          user_sex: [
+            { required: true, message: '请输入性别', trigger: 'blur' },
+            { validator: checkSex, trigger: 'blur' }
+          ],
+          U_livingplace: [
+            { required: true, message: '请输入现居地', trigger: 'blur' }
+          ],
+          update_time: [
+            { required: true, message: '请输入年-月-日', trigger: 'blur' },
           ]
         },
         // 控制分配角色对话框的显示与隐藏
-        setRoleDialogVisible: false,
+        // setRoleDialogVisible: false,
         // 需要被分配角色的用户信息
-        userInfo: {},
+        // userInfo: {},
         // 所有角色的数据列表
-        rolesList: [],
+        // rolesList: [],
         // 已选中的角色Id值
-        selectedRoleId: ''
+        // selectedRoleId: ''
       }
     },
 
@@ -228,7 +297,7 @@
 
     methods: {
       async getUserList() {
-        const { data: res } = await this.$http.get('users', { params: this.queryInfo })
+        const { data: res } = await this.$http.get('frontendUsers', { params: this.queryInfo })
         if (res.meta.status !== 200) return this.$message.error('获取用户列表失败')
         console.log(res)
         this.userlist = res.data.users
@@ -248,14 +317,14 @@
       },
 
       // 监听 switch 开关状态的改变，修改状态值
-      async userStateChanged(userinfo) {
-        const { data: res } = await this.$http.put(`users/${userinfo.id}/state/${userinfo.mg_state}`)
-        if (res.meta.status !== 200) {
-          userinfo.mg_state = !userinfo.mg_state
-          return this.$message.error('Update user failed') // 更新用户状态失败
-        }
-        this.$message.success('User status updated successfully') // 更新用户状态成功
-      },
+      // async userStateChanged(userinfo) {
+      //   const { data: res } = await this.$http.put(`users/${userinfo.id}/state/${userinfo.mg_state}`)
+      //   if (res.meta.status !== 200) {
+      //     userinfo.mg_state = !userinfo.mg_state
+      //     return this.$message.error('Update user failed') // 更新用户状态失败
+      //   }
+      //   this.$message.success('User status updated successfully') // 更新用户状态成功
+      // },
 
       // 监听添加用户对话框的关闭事件
       addDialogClosed() {
@@ -267,7 +336,7 @@
         this.$refs.addFormRef.validate(async valid => {
           if (!valid) return
           // 可以发起添加用户的网络请求
-          const { data: res } = await this.$http.post('users', this.addForm)
+          const { data: res } = await this.$http.post('frontendUsers', this.addForm)
 
           if (res.meta.status !== 201) {
             return this.$message.error('添加用户失败！')
@@ -282,9 +351,9 @@
       },
 
       // 展示修改用户的对话框
-      async showEditDialog(id) {
-        // console.log(id)
-        const { data: res } = await this.$http.get('users/' + id)
+      async showEditDialog(user_id) {
+        console.log(user_id)
+        const { data: res } = await this.$http.get('frontendUsers/' + user_id)
 
         if (res.meta.status !== 200) {
           return this.$message.error('查询用户信息失败！')
@@ -303,10 +372,17 @@
           if (!valid) return
           // 发起修改用户信息的数据请求
           const { data: res } = await this.$http.put(
-            'users/' + this.editForm.id,
+            'frontendUsers/' + this.editForm.user_id,
             {
-              email: this.editForm.email,
-              mobile: this.editForm.mobile
+              username: this.editForm.username,
+              user_sex: this.editForm.user_sex,
+              birthday: this.editForm.birthday,
+              U_livingplace: this.editForm.U_livingplace,
+              update_time: this.editForm.update_time,
+              user_email: this.editForm.user_email,
+              user_tel: this.editForm.user_tel
+              // email: this.editForm.email,
+              // mobile: this.editForm.mobile
             }
           )
 
@@ -324,7 +400,7 @@
       },
 
       // 根据Id删除对应的用户信息
-      async removeUserById(id) {
+      async removeUserById(user_id) {
         // 弹框询问用户是否删除数据
         const confirmResult = await this.$confirm(
           '此操作将永久删除该用户, 是否继续?',
@@ -343,7 +419,7 @@
           return this.$message.info('已取消删除')
         }
 
-        const { data: res } = await this.$http.delete('users/' + id)
+        const { data: res } = await this.$http.delete('frontendUsers/' + user_id)
 
         if (res.meta.status !== 200) {
           return this.$message.error('删除用户失败！')
@@ -353,46 +429,46 @@
         this.getUserList()
       },
 
-      // 展示分配角色的对话框
-      async setRole(userInfo) {
-        this.userInfo = userInfo
+      // // 展示分配角色的对话框
+      // async setRole(userInfo) {
+      //   this.userInfo = userInfo
 
-        // 在展示对话框之前，获取所有角色的列表
-        const { data: res } = await this.$http.get('roles')
-        if (res.meta.status !== 200) {
-          return this.$message.error('获取角色列表失败！')
-        }
+      //   // 在展示对话框之前，获取所有角色的列表
+      //   const { data: res } = await this.$http.get('roles')
+      //   if (res.meta.status !== 200) {
+      //     return this.$message.error('获取角色列表失败！')
+      //   }
 
-        this.rolesList = res.data
+      //   this.rolesList = res.data
 
-        this.setRoleDialogVisible = true
-      },
+      //   this.setRoleDialogVisible = true
+      // },
       // 点击按钮，分配角色
-      async saveRoleInfo() {
-        if (!this.selectedRoleId) {
-          return this.$message.error('请选择要分配的角色！')
-        }
+      // async saveRoleInfo() {
+      //   if (!this.selectedRoleId) {
+      //     return this.$message.error('请选择要分配的角色！')
+      //   }
 
-        const { data: res } = await this.$http.put(
-          `users/${this.userInfo.id}/role`,
-          {
-            rid: this.selectedRoleId
-          }
-        )
+      //   const { data: res } = await this.$http.put(
+      //     `users/${this.userInfo.id}/role`,
+      //     {
+      //       rid: this.selectedRoleId
+      //     }
+      //   )
 
-        if (res.meta.status !== 200) {
-          return this.$message.error('更新角色失败！')
-        }
+      //   if (res.meta.status !== 200) {
+      //     return this.$message.error('更新角色失败！')
+      //   }
 
-        this.$message.success('更新角色成功！')
-        this.getUserList()
-        this.setRoleDialogVisible = false
-      },
-      // 监听分配角色对话框的关闭事件
-      setRoleDialogClosed() {
-        this.selectedRoleId = ''
-        this.userInfo = {}
-      }
+      //   this.$message.success('更新角色成功！')
+      //   this.getUserList()
+      //   this.setRoleDialogVisible = false
+      // },
+      // // 监听分配角色对话框的关闭事件
+      // setRoleDialogClosed() {
+      //   this.selectedRoleId = ''
+      //   this.userInfo = {}
+      // }
 
     }
   }
@@ -400,43 +476,3 @@
 
 <style lang="less" scoped>
 </style>
-
-
-<!-- 未绑定
-  拿到API后先做什么：
-  //1. 修改 侧边栏
-  2. 修改 用户管理->用户列表->用户显示格式，添加用户的对话框
-  3. 完成 修改用户 和 删除用户
-
-  //用户状态修改: P50
-  //完整的添加用户表单 addForm： P53
-  //  自定义用户信息的验证规则，例如邮箱、手机: P54
-  //  用户表单的重置，即再次打开表单后显示的是空表单： P55
-  //  点击确定后表单的预校验：P56
-  //  调用API接口完成添加用户的操作：P57
-  // 修改用户功能：P58-63
-  // 删除用户功能：P64-65
-
-  权限管理
-    分为两种用户：admin和mannufactor
-    A是超级管理者，可以做所有事情
-    M只能对商品（游戏）进行管理
-    角色列表
-      未做：P74-84
-      分配权限：P85-91
-    //权限列表 （list结构）
-    //  渲染权限标签：P71
-      
-
-  商品管理
-    商品（游戏）列表
-    商品（游戏）分类
-
-  订单（论坛）管理
-
-  订单（market）管理
-    这个可以和论坛的形式一样，只不过这里的帖子名字是游戏/组件的名字+售价
-
-  订单（club）管理
-    还没想好
--->
