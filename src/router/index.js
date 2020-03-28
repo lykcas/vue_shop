@@ -7,6 +7,10 @@ import Users from '../components/user/Users.vue'
 import Rights from '../components/power/Rights.vue'
 import Roles from '../components/power/Roles.vue'
 import FrontendUsers from '../components/user/FrontendUsers.vue'
+import Cate from '../components/goods/Cate.vue'
+import Params from '../components/goods/Params.vue'
+import GoodsList from '../components/goods/List.vue'
+import Add from '../components/goods/Add.vue'
 
 Vue.use(VueRouter)
 
@@ -17,9 +21,13 @@ const routes = [
     path: '/home', component: Home, redirect: '/welcome', children: [
       { path: '/welcome', component: Welcome },
       { path: '/users', component: Users},
-      { path: '/frontendUsers', component: FrontendUsers},
+      { path: '/frontendUsers', component: FrontendUsers}, //这些是由后台决定的，是固定的，前台无法更改
       { path: '/rights', component: Rights},
-      { path: '/roles', component: Roles}
+      { path: '/roles', component: Roles},
+      { path: '/goods', component: GoodsList},
+      { path: '/goods/add', component: Add},
+      { path: '/categories', component: Cate },
+      { path: '/params', component: Params }
     ]
   }
 ]
