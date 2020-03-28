@@ -11,6 +11,7 @@ import Cate from '../components/goods/Cate.vue'
 import Params from '../components/goods/Params.vue'
 import GoodsList from '../components/goods/List.vue'
 import Add from '../components/goods/Add.vue'
+import Manufacturers from '../components/user/Manufacturers.vue'
 
 Vue.use(VueRouter)
 
@@ -24,10 +25,11 @@ const routes = [
       { path: '/frontendUsers', component: FrontendUsers}, //这些是由后台决定的，是固定的，前台无法更改
       { path: '/rights', component: Rights},
       { path: '/roles', component: Roles},
-      { path: '/goods', component: GoodsList},
-      { path: '/goods/add', component: Add},
+      { path: '/games', component: GoodsList},
+      { path: '/games/add', component: Add},
       { path: '/categories', component: Cate },
-      { path: '/params', component: Params }
+      { path: '/params', component: Params },
+      { path: '/Manufacturers', component: Manufacturers}
     ]
   }
 ]

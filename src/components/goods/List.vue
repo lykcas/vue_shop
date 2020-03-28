@@ -114,7 +114,7 @@ export default {
       this.getGoodsList()
     },
     goAddpage() {
-      this.$router.push('/goods/add')
+      this.$router.push('/games/add')
     }
   }
 }
