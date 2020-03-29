@@ -18,7 +18,7 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
+          <el-button type="primary" @click="addDialogVisible = true">添加社区</el-button>
         </el-col>
       </el-row>
 
@@ -26,17 +26,22 @@
       <el-table :data="userlist" border stripe>
         <el-table-column type="index"></el-table-column>
         <!--索引列-->
-        <el-table-column label="Name" prop="username">
+        <el-table-column label="社区名称" prop="C_name">
         </el-table-column>
-        <el-table-column label="Sex" prop="user_sex">
+        <el-table-column label="所属游戏" prop="G_id">
         </el-table-column>
-        <el-table-column label="Email" prop="user_email">
+        <el-table-column label="创建时间" prop="Found_time">
         </el-table-column>
-        <el-table-column label="Mobile" prop="user_tel">
+        <el-table-column label="更新时间" prop="Update_time">
         </el-table-column>
-        <el-table-column label="Living place" prop="U_livingplace">
-        </el-table-column>
-        <el-table-column label="生日" prop="birthday">
+        <el-table-column label="介绍说明" width="80px">
+          <template slot-scope="scope">
+            <el-button type="info" icon="el-icon-info" size="mini" @click="showInfoDialog(scope.row.Description)">
+            </el-button>
+            <!-- <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+            </el-tooltip> -->
+          </template>
         </el-table-column>
         <!-- 状态按钮 -->
         <!-- <el-table-column label="状态" prop="mg_state">
@@ -48,14 +53,10 @@
         <!-- 修改、删除、权限按钮 -->
         <el-table-column label="操作" width="120px">
           <template slot-scope="scope">
-            <el-tooltip effect="dark" content="修改" placement="top" :enterable="false">
-              <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.user_id)">
-              </el-button>
-            </el-tooltip>
-            <el-tooltip effect="dark" content="修改" placement="top" :enterable="false">
-              <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.user_id)">
-              </el-button>
-            </el-tooltip>
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.C_id)">
+            </el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.C_id)">
+            </el-button>
             <!-- <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
               <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
             </el-tooltip> -->
@@ -71,35 +72,23 @@
     </el-card>
 
     <!-- 这是“添加用户”所弹出的对话框 -->
-    <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
+    <el-dialog title="添加社区" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
       <!-- 内容主体区域 -->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="95px">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="addForm.username"></el-input>
+        <el-form-item label="社区名称" prop="C_name">
+          <el-input v-model="addForm.C_name"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="addForm.password"></el-input>
+        <el-form-item label="所属游戏ID" prop="G_id">
+          <el-input v-model="addForm.G_id"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="user_sex">
-          <el-input v-model="addForm.user_sex"></el-input>
+        <el-form-item label="创建时间" prop="Found_time">
+          <el-input v-model="addForm.Found_time"></el-input>
         </el-form-item>
-        <el-form-item label="生日" prop="birthday">
-          <el-input v-model="addForm.birthday"></el-input>
+        <el-form-item label="更新时间" prop="Update_time">
+          <el-input v-model="addForm.Update_time"></el-input>
         </el-form-item>
-        <el-form-item label="现居地" prop="U_livingplace">
-          <el-input v-model="addForm.U_livingplace"></el-input>
-        </el-form-item>
-        <el-form-item label="注册时间" prop="register_time">
-          <el-input v-model="addForm.register_time"></el-input>
-        </el-form-item>
-        <el-form-item label="登陆时间" prop="update_time">
-          <el-input v-model="addForm.update_time"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="user_email">
-          <el-input v-model="addForm.user_email"></el-input>
-        </el-form-item>
-        <el-form-item label="手机" prop="user_tel">
-          <el-input v-model="addForm.user_tel"></el-input>
+        <el-form-item label="介绍" prop="Description">
+          <el-input v-model="addForm.Description"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部区域 -->
@@ -110,34 +99,39 @@
     </el-dialog>
 
     <!-- 修改用户的对话框 -->
-    <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
+    <el-dialog title="修改社区" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
       <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
-        <el-form-item label="用户名">
-          <el-input v-model="editForm.username" disabled></el-input>
+        <el-form-item label="社区名称">
+          <el-input v-model="editForm.C_name" disabled></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="user_sex">
-          <el-input v-model="editForm.user_sex"></el-input>
+        <el-form-item label="所属游戏ID" prop="G_id">
+          <el-input v-model="editForm.G_id"></el-input>
         </el-form-item>
-        <el-form-item label="生日" prop="birthday">
-          <el-input v-model="editForm.birthday"></el-input>
+        <el-form-item label="创建时间" prop="Found_time">
+          <el-input v-model="editForm.Found_time"></el-input>
         </el-form-item>
-        <el-form-item label="现居地" prop="U_livingplace">
-          <el-input v-model="editForm.U_livingplace"></el-input>
+        <el-form-item label="更新时间" prop="Update_time">
+          <el-input v-model="editForm.Update_time"></el-input>
         </el-form-item>
-        <el-form-item label="登陆时间" prop="update_time">
-          <el-input v-model="editForm.update_time"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="user_email">
-          <el-input v-model="editForm.user_email"></el-input>
-        </el-form-item>
-        <el-form-item label="手机" prop="user_tel">
-          <el-input v-model="editForm.user_tel"></el-input>
+        <el-form-item label="介绍" prop="Description">
+          <el-input v-model="editForm.Description"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部区域 -->
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 详细信息的对话框 -->
+    <el-dialog title="详细信息" :visible.sync="infoDialogVisible" width="70%">
+      <div>
+        {{info_discription}}
+      </div>
+      <!-- 底部区域 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="infoDialogVisible = false">关闭</el-button>
       </span>
     </el-dialog>
 
@@ -227,41 +221,25 @@
         addDialogVisible: false,
         // 通过这个表单，将新用户的数据进行添加
         addForm: {
-          username: ''
+          C_name: ''
         },
         // 通过这个验证规则对象，对新用户的数据进行审查
         addFormRules: {
-          username: [
-            { required: true, message: '请输入用户名', trigger: 'blur' },
-            { min: 3, max: 10, message: 'The length of user must in 3~10 characters', trigger: 'blur' }
+          C_name: [
+            { required: true, message: '请输入厂商名', trigger: 'blur' },
+            { min: 1, max: 10, message: 'The length of name must in 1~10 characters', trigger: 'blur' }
           ],
-          password: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-            { min: 6, max: 15, message: '用户名的长度在6~15个字符之间', trigger: 'blur' }
+          G_id: [
+            { required: true, message: '请输入所属游戏ID', trigger: 'blur' }
           ],
-          user_sex: [
-            { required: true, message: '请输入性别', trigger: 'blur' },
-            { validator: checkSex, trigger: 'blur' }
-          ],
-          U_livingplace: [
-            { required: true, message: '请输入现居地', trigger: 'blur' }
-          ],
-          user_email: [
-            { required: true, message: '请输入邮箱', trigger: 'blur' },
-            { validator: checkEmail, trigger: 'blur' }
-          ],
-          register_time: [
-            { required: true, message: '请输入年-月-日', trigger: 'blur' },
+          Found_time: [
+            { required: true, message: '请输入创建时间', trigger: 'blur' },
             { validator: checkDate, trigger: 'blur' }
           ],
-          update_time: [
-            { required: true, message: '请输入年-月-日', trigger: 'blur' },
+          Update_time: [
+            { required: true, message: '请输入更新时间', trigger: 'blur' },
             { validator: checkDate, trigger: 'blur' }
           ]
-          // user_tel: [
-          //   { required: true, message: '请输入手机号', trigger: 'blur' },
-          //   { validator: checkMobile, trigger: 'blur' }
-          // ]
         },
 
         // 控制修改用户对话框的显示与隐藏
@@ -270,21 +248,24 @@
         editForm: {},
         // 修改表单的验证规则对象
         editFormRules: {
-          user_email: [
-            { required: true, message: '请输入用户邮箱', trigger: 'blur' },
-            { validator: checkEmail, trigger: 'blur' }
+          G_id: [
+            { required: true, message: '请输入所属游戏ID', trigger: 'blur' }
           ],
-          user_sex: [
-            { required: true, message: '请输入性别', trigger: 'blur' },
-            { validator: checkSex, trigger: 'blur' }
+          Found_time: [
+            { required: true, message: '请输入创建时间', trigger: 'blur' },
+            { validator: checkDate, trigger: 'blur' }
           ],
-          U_livingplace: [
-            { required: true, message: '请输入现居地', trigger: 'blur' }
-          ],
-          update_time: [
-            { required: true, message: '请输入年-月-日', trigger: 'blur' },
+          Update_time: [
+            { required: true, message: '请输入更新时间', trigger: 'blur' },
+            { validator: checkDate, trigger: 'blur' }
           ]
         },
+
+        // 控制详细信息对话框的显示与隐藏
+        infoDialogVisible: false,
+
+        info_discription: '11',
+
         // 控制分配角色对话框的显示与隐藏
         // setRoleDialogVisible: false,
         // 需要被分配角色的用户信息
@@ -302,10 +283,10 @@
 
     methods: {
       async getUserList() {
-        const { data: res } = await this.$http.get('frontendUsers', { params: this.queryInfo })
-        if (res.meta.status !== 200) return this.$message.error('获取用户列表失败')
+        const { data: res } = await this.$http.get('communities', { params: this.queryInfo })
+        if (res.meta.status !== 200) return this.$message.error('获取社区列表失败')
         console.log(res)
-        this.userlist = res.data.users
+        this.userlist = res.data.communities
         this.total = res.data.total
         console.log(res)
       },
@@ -341,13 +322,13 @@
         this.$refs.addFormRef.validate(async valid => {
           if (!valid) return
           // 可以发起添加用户的网络请求
-          const { data: res } = await this.$http.post('frontendUsers', this.addForm)
+          const { data: res } = await this.$http.post('communities', this.addForm)
 
           if (res.meta.status !== 201) {
-            return this.$message.error('添加用户失败！')
+            return this.$message.error('添加失败！')
           }
 
-          this.$message.success('添加用户成功！')
+          this.$message.success('添加成功！')
           // 隐藏添加用户的对话框
           this.addDialogVisible = false
           // 重新获取用户列表数据
@@ -355,13 +336,19 @@
         })
       },
 
+      showInfoDialog(Description) {
+        // const {data: res } = await this.$http.get()
+        this.info_discription = Description
+        this.infoDialogVisible = true
+      },
+
       // 展示修改用户的对话框
-      async showEditDialog(user_id) {
-        console.log(user_id)
-        const { data: res } = await this.$http.get('frontendUsers/' + user_id)
+      async showEditDialog(C_id) {
+        // console.log(M_id)
+        const { data: res } = await this.$http.get('communities/' + C_id)
 
         if (res.meta.status !== 200) {
-          return this.$message.error('查询用户信息失败！')
+          return this.$message.error('查询信息失败！')
         }
 
         this.editForm = res.data
@@ -377,15 +364,13 @@
           if (!valid) return
           // 发起修改用户信息的数据请求
           const { data: res } = await this.$http.put(
-            'frontendUsers/' + this.editForm.user_id,
+            'communities/' + this.editForm.C_id,
             {
-              username: this.editForm.username,
-              user_sex: this.editForm.user_sex,
-              birthday: this.editForm.birthday,
-              U_livingplace: this.editForm.U_livingplace,
-              update_time: this.editForm.update_time,
-              user_email: this.editForm.user_email,
-              user_tel: this.editForm.user_tel
+              C_name: this.editForm.C_name,
+              G_id: this.editForm.G_id,
+              Found_time: this.editForm.Found_time,
+              Update_time: this.editForm.Update_time,
+              Description: this.editForm.Description
               // email: this.editForm.email,
               // mobile: this.editForm.mobile
             }
@@ -405,7 +390,7 @@
       },
 
       // 根据Id删除对应的用户信息
-      async removeUserById(user_id) {
+      async removeUserById(C_id) {
         // 弹框询问用户是否删除数据
         const confirmResult = await this.$confirm(
           '此操作将永久删除该用户, 是否继续?',
@@ -424,13 +409,13 @@
           return this.$message.info('已取消删除')
         }
 
-        const { data: res } = await this.$http.delete('frontendUsers/' + user_id)
+        const { data: res } = await this.$http.delete('communities/' + C_id)
 
         if (res.meta.status !== 200) {
-          return this.$message.error('删除用户失败！')
+          return this.$message.error('删除失败！')
         }
 
-        this.$message.success('删除用户成功！')
+        this.$message.success('删除成功！')
         this.getUserList()
       },
 
@@ -480,7 +465,4 @@
 </script>
 
 <style lang="less" scoped>
-  .el-table {
-    text-align: center;
-  }
 </style>

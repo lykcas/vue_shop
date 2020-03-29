@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { Button, Form, FormItem, Input, Message, Container, Header, Aside, Main, Menu, Submenu, MenuItemGroup, 
   MenuItem, Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn, Switch, Tooltip, Pagination, 
   Dialog, MessageBox, Tag, Tree, Select, Option, Cascader, Alert, Tabs, TabPane, Steps, Step, CheckboxGroup,
-  Checkbox } from 'element-ui'
+  Checkbox, Link } from 'element-ui'
 // import Element from 'element-ui'
 
 Vue.use(Button)
@@ -40,6 +40,7 @@ Vue.use(Steps)
 Vue.use(Step)
 Vue.use(CheckboxGroup)
 Vue.use(Checkbox)
+Vue.use(Link)
 // Vue.use(MessageBox)
 // Vue.use(ElementUI)
 Vue.prototype.$message = Message

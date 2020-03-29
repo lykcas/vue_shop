@@ -32,6 +32,14 @@
         </el-table-column>
         <el-table-column label="联系电话" prop="M_contact">
         </el-table-column>
+        <el-table-column label="详细信息" width="80px">
+          <template slot-scope="scope">
+            <el-button type="info" icon="el-icon-info" size="mini" @click="showInfoDialog(scope.row.M_discription)"></el-button>
+            <!-- <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+            </el-tooltip> -->
+          </template>
+        </el-table-column>
         <!-- 状态按钮 -->
         <!-- <el-table-column label="状态" prop="mg_state">
           <template slot-scope="scope">
@@ -40,11 +48,10 @@
           </template>
         </el-table-column> -->
         <!-- 修改、删除、权限按钮 -->
-        <el-table-column label="操作" width="180px">
+        <el-table-column label="操作" width="120px">
           <template slot-scope="scope">
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.M_id)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.M_id)">
-            </el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.M_id)"></el-button>
             <!-- <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
               <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
             </el-tooltip> -->
@@ -106,6 +113,17 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 详细信息的对话框 -->
+    <el-dialog title="详细信息" :visible.sync="infoDialogVisible" width="70%">
+      <div >
+        {{info_discription}}
+      </div>
+      <!-- 底部区域 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="infoDialogVisible = false">关闭</el-button>
       </span>
     </el-dialog>
 
@@ -230,6 +248,12 @@
             { validator: checkMobile, trigger: 'blur' }
           ]
         },
+
+        // 控制详细信息对话框的显示与隐藏
+        infoDialogVisible: false,
+
+        info_discription: '11',
+
         // 控制分配角色对话框的显示与隐藏
         // setRoleDialogVisible: false,
         // 需要被分配角色的用户信息
@@ -300,9 +324,15 @@
         })
       },
 
+      showInfoDialog(M_discription) {
+        // const {data: res } = await this.$http.get()
+        this.info_discription = M_discription
+        this.infoDialogVisible = true
+      },
+
       // 展示修改用户的对话框
       async showEditDialog(M_id) {
-        console.log(M_id)
+        // console.log(M_id)
         const { data: res } = await this.$http.get('manufacturers/' + M_id)
 
         if (res.meta.status !== 200) {

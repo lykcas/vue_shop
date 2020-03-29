@@ -5,20 +5,20 @@
       <div class="avatar_box">
         <img src="../assets/logo.png" alt="">
       </div>
-      <!--登陆表单区域-->
+      <!--The login form-->
       <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form">
-        <!--用户名-->
+        <!-- Username -->
         <el-form-item prop="username">
           <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
         </el-form-item>
-        <!--密码-->
+        <!-- Password -->
         <el-form-item prop="password">
           <el-input v-model="loginForm.password" prefix-icon="iconfont icon-3702mima" type="password"></el-input>
         </el-form-item>
-        <!--按钮-->
+        <!-- Button -->
         <el-form-item class="btns">
-          <el-button type="primary" @click="login">登陆</el-button>
-          <el-button type="info" @click="resetLoginForm">重置</el-button>
+          <el-button type="primary" @click="login">Login</el-button>
+          <el-button type="info" @click="resetLoginForm">Reset</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -29,20 +29,20 @@
 export default {
   data() {
     return {
-      // 登录表单的数据绑定
+      // Data binding
       loginForm:{
-        username: '',
-        password:''
+        username: 'admin',
+        password:'123456'
       },
-      // 登录表单的验证规则
+      // Validation rules for the login form
       loginFormRules:{
         username:[
-          { required: true, message: '请输入活登陆名称', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+          { required: true, message: 'Please enter a user name', trigger: 'blur' },
+          { min: 3, max: 10, message: 'The length ranges from 3 to 10 characters', trigger: 'blur' }
         ],
         password:[
-          { required: true, message: '请输入活登陆密码', trigger: 'blur' },
-          { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+          { required: true, message: 'Please enter your password', trigger: 'blur' },
+          { min: 6, max: 15, message: 'The length ranges from 6 to 15 characters', trigger: 'blur' }
         ]      
       }
     };
@@ -54,15 +54,16 @@ export default {
       console.log(this);
       this.$refs.loginFormRef.resetFields();
     },
+
     login() {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return;
         const {data: res} = await this.$http.post("login", this.loginForm);
         if (res.meta.status !== 200) return this.$message.error('Login Failed');
         this.$message.success('Login Success');
-        // 登陆成功之后，保存token
+        // After successful login, save the token
         window.sessionStorage.setItem('token', res.data.token);
-        // 登陆成功之后，跳转到/home页面
+        // After successful login, jump to the '/home' page
         this.$router.push('/home');
       });
     }

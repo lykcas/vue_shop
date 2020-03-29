@@ -15,8 +15,8 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 // import ElementUI from 'element-ui'
-// 配置请求的根路径
-axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
+// Configure the root path of the request
+axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
 // axios.defaults.baseURL = 'https://www.liulongbin.top:8888/api/private/v1/'
 
 

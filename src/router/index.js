@@ -12,6 +12,12 @@ import Params from '../components/goods/Params.vue'
 import GoodsList from '../components/goods/List.vue'
 import Add from '../components/goods/Add.vue'
 import Manufacturers from '../components/user/Manufacturers.vue'
+import Community from '../components/group/Community.vue'
+import Club from '../components/group/Club.vue'
+import Market from '../components/posts/Market.vue'
+import Posts from '../components/posts/Posts.vue'
+import Type from '../components/goods/Type.vue'
+import Report from '../components/report/Report'
 
 Vue.use(VueRouter)
 
@@ -22,14 +28,20 @@ const routes = [
     path: '/home', component: Home, redirect: '/welcome', children: [
       { path: '/welcome', component: Welcome },
       { path: '/users', component: Users},
-      { path: '/frontendUsers', component: FrontendUsers}, //这些是由后台决定的，是固定的，前台无法更改
+      { path: '/frontendUsers', component: FrontendUsers}, //These are determined by the backend, are fixed and cannot be changed by the frontend
       { path: '/rights', component: Rights},
       { path: '/roles', component: Roles},
       { path: '/games', component: GoodsList},
       { path: '/games/add', component: Add},
       { path: '/categories', component: Cate },
       { path: '/params', component: Params },
-      { path: '/Manufacturers', component: Manufacturers}
+      { path: '/Manufacturers', component: Manufacturers},
+      { path: '/communities', component: Community},
+      { path: '/clubs', component: Club},
+      { path: '/markets', component: Market},
+      { path: '/posts', component: Posts},
+      { path: '/GameTypes', component: Type},
+      { path: '/reports', component: Report}
     ]
   }
 ]

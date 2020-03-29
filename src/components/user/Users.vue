@@ -26,14 +26,10 @@
       <el-table :data="userlist" border stripe>
         <el-table-column type="index"></el-table-column>
         <!--索引列-->
-        <el-table-column label="姓名" prop="username">
-        </el-table-column>
-        <el-table-column label="角色" prop="role_name">
-        </el-table-column>
-        <el-table-column label="邮箱" prop="email">
-        </el-table-column>
-        <el-table-column label="电话" prop="mobile">
-        </el-table-column>
+        <el-table-column label="姓名" prop="username"></el-table-column>
+        <el-table-column label="角色" prop="role_name"></el-table-column>
+        <el-table-column label="邮箱" prop="email"></el-table-column>
+        <el-table-column label="电话" prop="mobile"></el-table-column>
         <!-- 状态按钮 -->
         <el-table-column label="状态" prop="mg_state">
           <template slot-scope="scope">
@@ -44,10 +40,19 @@
         <!-- 修改、删除、权限按钮 -->
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
+            <!--修改按钮-->
+            <el-tooltip effect="dark" content="修改" placement="top" :enterable="false">
+              <el-button @click="showEditDialog(scope.row.id)" type="primary" icon="el-icon-edit" size="mini">
+              </el-button>
+            </el-tooltip>
+            <!--删除按钮-->
+            <el-tooltip effect="dark" content="删除" placement="top" :enterable="false">
+              <el-button type="danger" @click="removeUserById(scope.row.id)" icon="el-icon-delete" size="mini">
+              </el-button>
+            </el-tooltip>
+            <!--分配角色按钮-->
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
+              <el-button @click="setRole(scope.row)" type="warning" icon="el-icon-setting" size="mini"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -195,31 +200,31 @@
         // 通过这个验证规则对象，对新用户的数据进行审查
         addFormRules: {
           username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          {
-            min: 3,
-            max: 10,
-            message: '用户名的长度在3~10个字符之间',
-            trigger: 'blur'
-          }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          {
-            min: 6,
-            max: 15,
-            message: '用户名的长度在6~15个字符之间',
-            trigger: 'blur'
-          }
-        ],
-        email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { validator: checkEmail, trigger: 'blur' }
-        ],
-        mobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
-          { validator: checkMobile, trigger: 'blur' }
-        ]
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            {
+              min: 3,
+              max: 10,
+              message: '用户名的长度在3~10个字符之间',
+              trigger: 'blur'
+            }
+          ],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            {
+              min: 6,
+              max: 15,
+              message: '用户名的长度在6~15个字符之间',
+              trigger: 'blur'
+            }
+          ],
+          email: [
+            { required: true, message: '请输入邮箱', trigger: 'blur' },
+            { validator: checkEmail, trigger: 'blur' }
+          ],
+          mobile: [
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+            { validator: checkMobile, trigger: 'blur' }
+          ]
         },
 
         // 控制修改用户对话框的显示与隐藏
@@ -229,13 +234,13 @@
         // 修改表单的验证规则对象
         editFormRules: {
           email: [
-          { required: true, message: '请输入用户邮箱', trigger: 'blur' },
-          { validator: checkEmail, trigger: 'blur' }
-        ],
-        mobile: [
-          { required: true, message: '请输入用户手机', trigger: 'blur' },
-          { validator: checkMobile, trigger: 'blur' }
-        ]
+            { required: true, message: '请输入用户邮箱', trigger: 'blur' },
+            { validator: checkEmail, trigger: 'blur' }
+          ],
+          mobile: [
+            { required: true, message: '请输入用户手机', trigger: 'blur' },
+            { validator: checkMobile, trigger: 'blur' }
+          ]
         },
         // 控制分配角色对话框的显示与隐藏
         setRoleDialogVisible: false,
@@ -326,27 +331,27 @@
       // 修改用户信息并提交
       editUserInfo() {
         this.$refs.editFormRef.validate(async valid => {
-        if (!valid) return
-        // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put(
-          'users/' + this.editForm.id,
-          {
-            email: this.editForm.email,
-            mobile: this.editForm.mobile
+          if (!valid) return
+          // 发起修改用户信息的数据请求
+          const { data: res } = await this.$http.put(
+            'users/' + this.editForm.id,
+            {
+              email: this.editForm.email,
+              mobile: this.editForm.mobile
+            }
+          )
+
+          if (res.meta.status !== 200) {
+            return this.$message.error('更新用户信息失败！')
           }
-        )
 
-        if (res.meta.status !== 200) {
-          return this.$message.error('更新用户信息失败！')
-        }
-
-        // 关闭对话框
-        this.editDialogVisible = false
-        // 刷新数据列表
-        this.getUserList()
-        // 提示修改成功
-        this.$message.success('更新用户信息成功！')
-      })
+          // 关闭对话框
+          this.editDialogVisible = false
+          // 刷新数据列表
+          this.getUserList()
+          // 提示修改成功
+          this.$message.success('更新用户信息成功！')
+        })
       },
 
       // 根据Id删除对应的用户信息
