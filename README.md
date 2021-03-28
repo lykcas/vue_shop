@@ -1,6 +1,7 @@
 # vue_shop
 ```
-This is the front-end package for Admin in [Programming Skills coursework](https://github.com/lykcas/epcc7)
+This is the front-end package for Admin in 
+[Programming Skills coursework](https://github.com/lykcas/epcc7)
 ```
 
 ## Project setup
